@@ -1,0 +1,17 @@
+@hostname = 127.0.0.1
+@port = 5001
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+
+### Get Config
+# @name GetConfig
+POST https://{{host}}/config/vault
+Content-Type: {{contentType}}
+
+{
+    "impl": "gf-notify",
+    "application": "respect",
+    "env": "dev",
+    "user": "respect",
+    "pass": "elders@2020"
+}

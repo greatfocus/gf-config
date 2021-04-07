@@ -1,7 +1,6 @@
 package router
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/greatfocus/gf-config/controllers"
@@ -11,7 +10,6 @@ import (
 func LoadRouter() *http.ServeMux {
 	mux := http.NewServeMux()
 	loadHandlers(mux)
-	log.Println("Created routes with controllers")
 	return mux
 }
 
@@ -21,5 +19,5 @@ func loadHandlers(mux *http.ServeMux) {
 	vaultController := controllers.VaultController{}
 
 	// Initialize routes
-	mux.HandleFunc("/config/vaul", vaultController.Handler)
+	mux.HandleFunc("/config/vault", vaultController.Handler)
 }

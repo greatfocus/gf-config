@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -19,7 +18,7 @@ type VaultController struct{}
 // Handler method routes to http methods supported
 func (c *VaultController) Handler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	case http.MethodGet:
+	case http.MethodPost:
 		c.getConfig(w, r)
 	default:
 		err := errors.New("invalid Request")
@@ -47,6 +46,13 @@ func (c *VaultController) getConfig(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// validate payload
+	if vault.Application == "" || vault.Env == "" || vault.User == "" || vault.Pass == "" {
+		derr := errors.New("invalid payload request")
+		response.Error(w, http.StatusBadGateway, derr)
+		return
+	}
+
 	// validate user
 	if os.Args[2] != vault.User || os.Args[3] != vault.Pass {
 		derr := errors.New("authentication Failed")
@@ -55,37 +61,49 @@ func (c *VaultController) getConfig(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var path = "./vault/" + vault.Application + "/" + vault.Env + ".json"
-	config := read(path)
+	config, err := read(path)
+	if err != nil {
+		log.Printf("Error: %v\n", err)
+		response.Error(w, http.StatusUnprocessableEntity, errors.New("error accessing key vault"))
+		return
+	}
+
+	config.Env = vault.Env
+	config.Impl = vault.Impl
+
+	log.Printf("Received and sent vault config request for %s to %s service", vault.Env, vault.Impl)
 	response.Success(w, http.StatusOK, config)
 }
 
-func read(file string) config.Config {
-	log.Println("Reading configuration file")
+func read(file string) (config.Config, error) {
+	var result = config.Config{}
 	if len(file) < 1 {
-		log.Fatal(fmt.Println("config file name is empty"))
+		derr := errors.New("config file name is empty")
+		return result, derr
 	}
 
 	jsonFile, err := os.OpenFile(file, os.O_RDONLY, 0600)
-	// if we os.Open returns an error then handle it
 	if err != nil {
-		log.Fatal(fmt.Println("cannot find location of config file", err))
+		derr := errors.New("cannot find location of config file")
+		return result, derr
 	}
 
 	// read the config file
 	byteContent, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
-		log.Fatal(fmt.Println("invalid config format", err))
+		derr := errors.New("invalid config formate")
+		return result, derr
 	}
 
 	// convert the config file bytes to json
-	var result = config.Config{}
 	err = json.Unmarshal([]byte(byteContent), &result)
 	if err != nil {
-		log.Fatal(fmt.Println("Invalid config format", err))
+		derr := errors.New("invalid config formate")
+		return result, derr
 	}
 
 	// the closing of our jsonFile so that we can parse it later on
 	_ = jsonFile.Close()
 
-	return result
+	return result, nil
 }
