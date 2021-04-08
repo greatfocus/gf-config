@@ -1,13 +1,5 @@
-github.com/greatfocus/gf-frame v1.1.2 h1:yrKKJYBM2GQWIv0R9ldf64PnV0z/8e73qKxTQjkrz8w=
-github.com/greatfocus/gf-frame v1.1.2/go.mod h1:/7xIRAmnh57nrHMoBOaulUdyDFQ+fNR8r/akhOGiXlY=
-github.com/greatfocus/gf-frame v1.1.4 h1:j2O19p1EdvDvBufCnluFtnnfrszfgck3raLMqvp/WkA=
-github.com/greatfocus/gf-frame v1.1.4/go.mod h1:/7xIRAmnh57nrHMoBOaulUdyDFQ+fNR8r/akhOGiXlY=
-github.com/greatfocus/gf-frame v1.1.5 h1:SLlz6f3wboO/F1NX7tVjU2tGpDFlGx5JlbII441HaDs=
-github.com/greatfocus/gf-frame v1.1.5/go.mod h1:/7xIRAmnh57nrHMoBOaulUdyDFQ+fNR8r/akhOGiXlY=
-github.com/greatfocus/gf-frame v1.1.6 h1:9RIHlPVtY/Siugvl7HWkQgNzyLdeWYThiGkBWmLXKcU=
-github.com/greatfocus/gf-frame v1.1.6/go.mod h1:/7xIRAmnh57nrHMoBOaulUdyDFQ+fNR8r/akhOGiXlY=
-github.com/greatfocus/gf-frame v1.1.7 h1:OIaXbk+9tXOZuHMUKKhk4P9C2wnbyA3JvjcmdsISiUg=
-github.com/greatfocus/gf-frame v1.1.7/go.mod h1:/7xIRAmnh57nrHMoBOaulUdyDFQ+fNR8r/akhOGiXlY=
+github.com/greatfocus/gf-frame v1.1.8 h1:YtT7lCsfsuVoOx3fymrwjYruX63kxiFvyIE3rBntruI=
+github.com/greatfocus/gf-frame v1.1.8/go.mod h1:/7xIRAmnh57nrHMoBOaulUdyDFQ+fNR8r/akhOGiXlY=
 github.com/greatfocus/jwt-go v3.2.1+incompatible h1:Qhcx8ded+AlFjI9lxi7Q89mR4DsDWAsRxTQcqPFZvGE=
 github.com/greatfocus/jwt-go v3.2.1+incompatible/go.mod h1:lH6sQc40lvBWaPKIAA1mx0kCtpFVMM+tp2IIbd0eZvk=
 github.com/greatfocus/pq v1.9.0 h1:E2ZJuOYtdrgXxucg0b49+Mn7bcon4mwWtVfja7F07OQ=

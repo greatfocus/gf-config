@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/greatfocus/gf-config/router"
@@ -46,12 +47,13 @@ func main() {
 func serve(mux *http.ServeMux) {
 	// initialize variables
 	addr := ":5001"
-	root := os.Args[2]
+	ca := os.Args[2]
 	cert := os.Args[3]
 	key := os.Args[4]
 
 	// load CA certificate file and add it to list of client CAs
-	caCertFile, err := ioutil.ReadFile(root)
+	ca = filepath.Clean(ca)
+	caCertFile, err := ioutil.ReadFile(filepath.Clean(ca))
 	if err != nil {
 		log.Fatalf("error reading CA certificate: %v", err)
 	}
