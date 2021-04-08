@@ -1,6 +1,9 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -15,11 +18,11 @@ func main() {
 	// Get arguments
 	var env, user, pass, cert, key, port string
 	env = os.Args[1]
-	user = os.Args[2]
-	pass = os.Args[3]
-	cert = os.Args[4]
-	key = os.Args[5]
-	port = os.Args[6]
+	cert = os.Args[2]
+	key = os.Args[3]
+	port = os.Args[4]
+	user = os.Args[5]
+	pass = os.Args[6]
 	if env == "" {
 		panic("Configure the env")
 	}
@@ -42,15 +45,31 @@ func main() {
 // serve creates server instance
 func serve(mux *http.ServeMux) {
 	// initialize variables
-	cert := os.Args[4]
-	key := os.Args[5]
-	addr := ":" + os.Args[6]
+	addr := ":5001"
+	root := os.Args[2]
+	cert := os.Args[3]
+	key := os.Args[4]
+
+	// load CA certificate file and add it to list of client CAs
+	caCertFile, err := ioutil.ReadFile(root)
+	if err != nil {
+		log.Fatalf("error reading CA certificate: %v", err)
+	}
+	certPool := x509.NewCertPool()
+	certPool.AppendCertsFromPEM(caCertFile)
+
 	srv := &http.Server{
 		Addr:           addr,
 		ReadTimeout:    time.Duration(200) * time.Second,
 		WriteTimeout:   time.Duration(200) * time.Second,
 		MaxHeaderBytes: 1 << 20,
 		Handler:        mux,
+		TLSConfig: &tls.Config{
+			ClientAuth:         tls.RequireAndVerifyClientCert,
+			ClientCAs:          certPool,
+			MinVersion:         tls.VersionTLS12,
+			InsecureSkipVerify: false,
+		},
 	}
 
 	// create server connection

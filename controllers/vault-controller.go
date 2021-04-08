@@ -54,7 +54,7 @@ func (c *VaultController) getConfig(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// validate user
-	if os.Args[2] != vault.User || os.Args[3] != vault.Pass {
+	if os.Args[7] != vault.User || os.Args[8] != vault.Pass {
 		derr := errors.New("authentication Failed")
 		response.Error(w, http.StatusBadGateway, derr)
 		return
