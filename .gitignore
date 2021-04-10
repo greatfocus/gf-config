@@ -4,7 +4,5 @@
 *.dll
 *.so
 *.dylib
-*.json
-gf-*
+gf-config
 __debug_bin
-vault/**
