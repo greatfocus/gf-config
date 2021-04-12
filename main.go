@@ -46,7 +46,7 @@ func main() {
 // serve creates server instance
 func serve(mux *http.ServeMux) {
 	// initialize variables
-	addr := ":5001"
+	addr := ":5000"
 	ca := os.Args[2]
 	cert := os.Args[3]
 	key := os.Args[4]
