@@ -13,13 +13,9 @@
             "env": {},
             "args": [
                 "dev",
-                "/etc/ssl/respect/gf.crt",
-                "/etc/ssl/respect/gf-server.crt",
-                "/etc/ssl/respect/gf-server.key",
-                "/etc/ssl/respect/gf-client.crt",
-                "/etc/ssl/respect/gf-client.key",
-                "respect",
-                "elders@2020"
+                "1cjcq33bsko933nsd",
+                "/etc/ssl/respect/gf-cert.pem",
+                "/etc/ssl/respect/gf-key.pem"
             ]
         }
     ]

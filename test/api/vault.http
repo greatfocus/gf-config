@@ -11,7 +11,5 @@ Content-Type: {{contentType}}
 {
     "impl": "gf-notify",
     "application": "respect",
-    "env": "prod",
-    "user": "respect",
-    "pass": "elders@2020"
+    "env": "prod"
 }

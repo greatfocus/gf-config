@@ -1,4 +1,4 @@
-package controllers
+package handlers
 
 import (
 	"encoding/json"
@@ -8,32 +8,37 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/greatfocus/gf-frame/config"
-	"github.com/greatfocus/gf-frame/response"
+	"github.com/greatfocus/gf-sframe/config"
+	"github.com/greatfocus/gf-sframe/server"
 )
 
-// VaultController struct
-type VaultController struct{}
+// VaultHandler struct
+type VaultHandler func(http.ResponseWriter, *http.Request)
+
+// ServeHTTP calls f(w, r).
+func (v VaultHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	v(w, r)
+}
 
 // Handler method routes to http methods supported
-func (c *VaultController) Handler(w http.ResponseWriter, r *http.Request) {
+func (v *VaultHandler) Handler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
-		c.getConfig(w, r)
+		v.getConfig(w, r)
 	default:
 		err := errors.New("invalid Request")
-		response.Error(w, http.StatusNotFound, err)
+		server.Error(w, http.StatusNotFound, err)
 		return
 	}
 }
 
 // requestMessage method creates a message request
-func (c *VaultController) getConfig(w http.ResponseWriter, r *http.Request) {
+func (v *VaultHandler) getConfig(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		derr := errors.New("invalid payload request")
 		log.Printf("Error: %v\n", err)
-		response.Error(w, http.StatusBadGateway, derr)
+		server.Error(w, http.StatusBadGateway, derr)
 		return
 	}
 
@@ -42,21 +47,14 @@ func (c *VaultController) getConfig(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		derr := errors.New("invalid payload request")
 		log.Printf("Error: %v\n", err)
-		response.Error(w, http.StatusBadGateway, derr)
+		server.Error(w, http.StatusBadGateway, derr)
 		return
 	}
 
 	// validate payload
-	if vault.Application == "" || vault.Env == "" || vault.User == "" || vault.Pass == "" {
+	if vault.Application == "" || vault.Env == "" {
 		derr := errors.New("invalid payload request")
-		response.Error(w, http.StatusBadGateway, derr)
-		return
-	}
-
-	// validate user
-	if os.Args[7] != vault.User || os.Args[8] != vault.Pass {
-		derr := errors.New("authentication Failed")
-		response.Error(w, http.StatusBadGateway, derr)
+		server.Error(w, http.StatusBadGateway, derr)
 		return
 	}
 
@@ -64,7 +62,7 @@ func (c *VaultController) getConfig(w http.ResponseWriter, r *http.Request) {
 	config, err := read(path)
 	if err != nil {
 		log.Printf("Error: %v\n", err)
-		response.Error(w, http.StatusUnprocessableEntity, errors.New("error accessing key vault"))
+		server.Error(w, http.StatusUnprocessableEntity, errors.New("error accessing key vault"))
 		return
 	}
 
@@ -72,7 +70,7 @@ func (c *VaultController) getConfig(w http.ResponseWriter, r *http.Request) {
 	config.Impl = vault.Impl
 
 	log.Printf("Received and sent vault config request for %s to %s service", vault.Env, vault.Impl)
-	response.Success(w, http.StatusOK, config)
+	server.Success(w, http.StatusOK, config)
 }
 
 func read(file string) (config.Config, error) {
