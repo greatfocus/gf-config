@@ -42,7 +42,7 @@ func (v *VaultHandler) getConfig(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	vault := config.Vault{}
+	vault := config.Impl{}
 	err = json.Unmarshal(body, &vault)
 	if err != nil {
 		derr := errors.New("invalid payload request")

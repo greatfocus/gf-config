@@ -1,18 +1,19 @@
-name: Release
-on:
+name: Publish Release
+
+on:  
   push:
     tags:
-      - v*
+      - 'v*'
 
 jobs:
-  build:
-    name: Create Release
+  release:
+    name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v1
 
-      - name: Create Release
+      - name: Create Tag
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -22,5 +23,5 @@ jobs:
           release_name: Release ${{ github.ref }}
           body: |
             Release ${{ github.ref }}
-          draft: false
+          draft: true
           prerelease: false
