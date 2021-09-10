@@ -26,19 +26,21 @@ func (v *VaultHandler) Handler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		v.getConfig(w, r)
 	default:
+		publicKey := r.Context().Value(server.ContextPublicKey)
 		err := errors.New("invalid Request")
-		server.Error(w, http.StatusNotFound, err)
+		server.Error(w, http.StatusNotFound, err, publicKey.(string))
 		return
 	}
 }
 
 // requestMessage method creates a message request
 func (v *VaultHandler) getConfig(w http.ResponseWriter, r *http.Request) {
+	publicKey := r.Context().Value(server.ContextPublicKey)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		derr := errors.New("invalid payload request")
 		log.Printf("Error: %v\n", err)
-		server.Error(w, http.StatusBadGateway, derr)
+		server.Error(w, http.StatusBadGateway, derr, publicKey.(string))
 		return
 	}
 
@@ -47,30 +49,30 @@ func (v *VaultHandler) getConfig(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		derr := errors.New("invalid payload request")
 		log.Printf("Error: %v\n", err)
-		server.Error(w, http.StatusBadGateway, derr)
+		server.Error(w, http.StatusBadGateway, derr, publicKey.(string))
 		return
 	}
 
 	// validate payload
-	if vault.Application == "" || vault.Env == "" {
+	if vault.Service == "" || vault.Env == "" {
 		derr := errors.New("invalid payload request")
-		server.Error(w, http.StatusBadGateway, derr)
+		server.Error(w, http.StatusBadGateway, derr, publicKey.(string))
 		return
 	}
 
-	var path = "./vault/" + vault.Application + "/" + vault.Impl + "/" + vault.Env + ".json"
+	var path = "./vault/" + vault.Service + "/" + vault.Env + ".json"
 	config, err := read(path)
 	if err != nil {
 		log.Printf("Error: %v\n", err)
-		server.Error(w, http.StatusUnprocessableEntity, errors.New("error accessing key vault"))
+		server.Error(w, http.StatusUnprocessableEntity, errors.New("error accessing key vault"), publicKey.(string))
 		return
 	}
 
 	config.Env = vault.Env
-	config.Impl = vault.Impl
+	config.Impl = vault.Service
 
-	log.Printf("Received and sent vault config request for %s to %s service", vault.Env, vault.Impl)
-	server.Success(w, http.StatusOK, config)
+	log.Printf("Received and sent vault config request for %s to %s service", vault.Env, vault.Service)
+	server.Success(w, http.StatusOK, config, publicKey.(string))
 }
 
 func read(file string) (config.Config, error) {

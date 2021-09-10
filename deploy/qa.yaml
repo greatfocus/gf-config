@@ -1,0 +1,77 @@
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: pipeline-qa
+     
+    ---
+     
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: pipeline-configmap
+      namespace: pipeline-qa
+    data:
+      ENV: qa
+      ADR: :8080
+     
+    ---
+     
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: pipeline-service
+      namespace: pipeline-qa
+    spec:
+      type: ClusterIP
+      selector:
+        app: pipeline
+      ports:
+        - name: http
+          protocol: TCP
+          port: 80
+          targetPort: 8080
+     
+    ---
+     
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: pipeline-deployment
+      namespace: pipeline-qa
+      labels:
+        app: pipeline
+      annotations:
+        rollout: ""
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: pipeline
+      template:
+        metadata:
+          labels:
+            app: pipeline
+        spec:
+          containers:
+            - name: golang
+              image: you/pipeline:qa
+              imagePullPolicy: Always
+              ports:
+                - name: http
+                  protocol: TCP
+                  containerPort: 8080
+              envFrom:
+                - configMapRef:
+                    name: pipeline-configmap
+              volumeMounts:
+                - name: dotenv
+                  mountPath: ./.env
+                  subPath: .env
+                  readOnly: true
+          volumes:
+            - name: dotenv
+              secret:
+                secretName: pipeline-secret
+                items:
+                  - key: .env
+                    path: ./.env

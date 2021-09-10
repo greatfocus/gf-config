@@ -1,0 +1,100 @@
+    # Trigger the workflow to deploy to qa environment only when:
+    # - an existing pull request with any name/type is merged to the master or develop branch
+    # - a commit is directly pushed to the master or develop branch
+     
+    name: Continuous deployment
+     
+    on:
+      push:
+        branches:
+          - master
+          - develop
+     
+    jobs:
+     
+      setup:
+        runs-on: ubuntu-latest
+        outputs:
+          repo: ${{ steps.vars.outputs.repo }}
+          commit: ${{ steps.vars.outputs.commit }}
+        steps:
+          - name: Use repository
+            uses: actions/checkout@v2
+          - name: Build variables
+            id: vars
+            run: |
+              echo "::set-output name=repo::$GITHUB_REPOSITORY"
+              echo "::set-output name=commit::$(git rev-parse --short "$GITHUB_SHA")"
+          - name: Upload repository
+            uses: actions/upload-artifact@v2
+            with:
+              name: repository
+              path: |
+                ${{ github.workspace }}/deploy
+                ${{ github.workspace }}/docker
+                ${{ github.workspace }}/.dockerignore
+                ${{ github.workspace }}/main.go
+                ${{ github.workspace }}/main_test.go
+                ${{ github.workspace }}/go.mod
+                ${{ github.workspace }}/go.sum
+     
+      test:
+        needs: setup
+        runs-on: ubuntu-latest
+        steps:
+          - name: Use Golang 1.16
+            uses: actions/setup-go@v2
+            with:
+              go-version: 1.16
+          - name: Download repository
+            uses: actions/download-artifact@v2
+            with:
+              name: repository
+          - name: Run tests
+            run: go test -v -race -timeout=180s -count=1 -cover ./...
+     
+      docker:
+        needs: [setup, test]
+        runs-on: ubuntu-latest
+        steps:
+          - name: Download repository
+            uses: actions/download-artifact@v2
+            with:
+              name: repository
+          - name: Login to DockerHub
+            uses: docker/login-action@v1
+            with:
+              username: ${{ secrets.DOCKERHUB_USERNAME }}
+              password: ${{ secrets.DOCKERHUB_TOKEN }}
+          - name: Build and push image
+            uses: docker/build-push-action@v2
+            with:
+              push: true
+              file: ./docker/ci/Dockerfile
+              tags: ${{ needs.setup.outputs.repo }}:qa
+              build-args: COMMIT=${{ needs.setup.outputs.commit }}
+     
+      deploy:
+        needs: docker
+        runs-on: ubuntu-latest
+        steps:
+          - name: Download repository
+            uses: actions/download-artifact@v2
+            with:
+              name: repository
+          - name: Install kubectl
+            run: |
+              curl -LO https://dl.k8s.io/release/v1.21.0/bin/linux/amd64/kubectl
+              curl -LO "https://dl.k8s.io/v1.21.0/bin/linux/amd64/kubectl.sha256"
+              echo "$(<kubectl.sha256) kubectl" | sha256sum --check
+              sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+              kubectl version --client
+          - name: Create kube config
+            run: |
+              mkdir -p $HOME/.kube/
+              echo "${{ secrets.KUBE_QA_CONFIG }}" > $HOME/.kube/config
+          - name: Deploy
+            run: |
+              kubectl --kubeconfig $HOME/.kube/config apply -f deploy/k8s/qa.yaml
+              kubectl --kubeconfig $HOME/.kube/config patch deployment pipeline-deployment --namespace=pipeline-qa \
+                -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"rollout\":\"`date +'%s'`\"}}}}}"
