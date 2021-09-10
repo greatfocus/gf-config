@@ -1,7 +1,5 @@
 module github.com/greatfocus/gf-config
 
-go 1.14
+go 1.16
 
 require github.com/greatfocus/gf-sframe v0.0.1-beta.6
-
-replace github.com/greatfocus/gf-sframe => /home/muthurimi/go/src/github.com/greatfocus/gf-sframe
