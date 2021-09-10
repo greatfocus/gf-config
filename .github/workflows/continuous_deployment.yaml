@@ -1,13 +1,13 @@
     # Trigger the workflow to deploy to qa environment only when:
-    # - an existing pull request with any name/type is merged to the master or develop branch
-    # - a commit is directly pushed to the master or develop branch
+    # - an existing pull request with any name/type is merged to the main or develop branch
+    # - a commit is directly pushed to the main or develop branch
      
     name: Continuous deployment
      
     on:
       push:
         branches:
-          - master
+          - main
           - develop
      
     jobs:

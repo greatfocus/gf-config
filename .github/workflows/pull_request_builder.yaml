@@ -1,5 +1,5 @@
     # Trigger the workflow only when:
-    # - a new pull request with any name/type is opened against the master, develop, hotfix/* or release/* branch
+    # - a new pull request with any name/type is opened against the main, develop, hotfix/* or release/* branch
     # - a commit is directly pushed to the pull request
      
     name: Pull request builder
@@ -7,7 +7,7 @@
     on:
       pull_request:
         branches:
-          - master
+          - main
           - develop
           - hotfix/*
           - release/*
