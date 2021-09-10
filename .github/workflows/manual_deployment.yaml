@@ -114,5 +114,5 @@
           - name: Deploy
             run: |
               kubectl --kubeconfig $HOME/.kube/config apply -f deploy/k8s/${{ github.event.inputs.env }}.yaml
-              kubectl --kubeconfig $HOME/.kube/config patch deployment pipeline-deployment --namespace=pipeline-${{ github.event.inputs.env }} \
+              kubectl --kubeconfig $HOME/.kube/config patch deployment gf-config-deployment --namespace=gf-config-${{ github.event.inputs.env }} \
                 -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"rollout\":\"`date +'%s'`\"}}}}}"
