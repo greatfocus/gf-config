@@ -57,7 +57,8 @@
             with:
               push: true
               file: ./docker/ci/Dockerfile
-              tags: ${{ needs.setup.outputs.repo }}:qa
+              tags: mucunga90/gf-config:qa
+              # tags: ${{ needs.setup.outputs.repo }}:qa
               build-args: COMMIT=${{ needs.setup.outputs.commit }}
      
       deploy:
