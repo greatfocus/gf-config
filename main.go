@@ -10,26 +10,6 @@ import (
 
 // Entry point to service
 func main() {
-	//declare variables
-	var env, encryptionKey, cert, key string
-
-	// validate arguments
-	if env == "" {
-		panic("Configure the env")
-	}
-	if encryptionKey == "" {
-		panic("Failed to set encryption Key")
-	}
-	if cert == "" || key == "" {
-		panic("Failed to set security")
-	}
-
-	// start
-	start()
-}
-
-// serve creates server instance
-func start() {
 	// initialize variables
 	mux := router.LoadRouter()
 	addr := ":5000"
@@ -45,5 +25,4 @@ func start() {
 	// create server connection
 	log.Println("Listening to port secure HTTPS", addr)
 	log.Fatal(srv.ListenAndServe())
-
 }
