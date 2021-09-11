@@ -188,7 +188,7 @@ jobs:
             ${{ github.workspace }}/go.sum
   
   docker:
-    needs: [setup, test]
+    needs: [setup]
     runs-on: ubuntu-latest
     steps:
       - name: Download repository
