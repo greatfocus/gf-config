@@ -1,2 +1,2 @@
 # gf-config
-Key vault service for providing configurations
+Configurations service for providing configs to services
