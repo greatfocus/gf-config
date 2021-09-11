@@ -83,5 +83,5 @@
           - name: Deploy
             run: |
               kubectl --kubeconfig $HOME/.kube/config apply -f deploy/k8s/qa.yaml
-              kubectl --kubeconfig $HOME/.kube/config patch deployment gf-config-deployment --namespace=gf-config-qa \
+              kubectl --kubeconfig $HOME/.kube/config patch deployment gf-config-deployment --namespace=qa \
                 -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"rollout\":\"`date +'%s'`\"}}}}}"
