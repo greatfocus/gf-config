@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: pipeline-stage
+  name: stage
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: pipeline-configmap
-  namespace: pipeline-stage
+  name: gf-config-configmap
+  namespace: stage
 data:
   ENV: stage
   ADR: :8080
@@ -15,12 +15,12 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  name: pipeline-service
-  namespace: pipeline-stage
+  name: gf-config-service
+  namespace: stage
 spec:
   type: ClusterIP
   selector:
-    app: pipeline
+    app: gf-config
   ports:
     - name: http
       protocol: TCP
@@ -30,33 +30,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pipeline-deployment
-  namespace: pipeline-stage
+  name: gf-config-deployment
+  namespace: stage
   labels:
-    app: pipeline
+    app: gf-config
   annotations:
     rollout: ""
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pipeline
+      app: gf-config
   template:
     metadata:
       labels:
-        app: pipeline
+        app: gf-config
     spec:
       containers:
         - name: golang
-          image: you/pipeline:stage
-          imagePullPolicy: Always
+          image: mucunga90/gf-config:stage
+          imagePullPolicy: IfNotPresent
           ports:
             - name: http
               protocol: TCP
               containerPort: 8080
           envFrom:
             - configMapRef:
-                name: pipeline-configmap
+                name: gf-config-configmap
           volumeMounts:
             - name: dotenv
               mountPath: ./.env
@@ -65,7 +65,7 @@ spec:
       volumes:
         - name: dotenv
           secret:
-            secretName: pipeline-secret
+            secretName: gf-config-secret
             items:
               - key: .env
                 path: ./.env
