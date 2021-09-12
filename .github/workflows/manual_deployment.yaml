@@ -205,7 +205,7 @@ jobs:
         with:
           push: true
           file: ./docker/ci/Dockerfile
-          tags: ${{ needs.setup.outputs.repo }}:${{ github.event.inputs.env }}
+          # tags: ${{ needs.setup.outputs.repo }}:${{ github.event.inputs.env }}
           tags: mucunga90/gf-config:${{ github.event.inputs.env }}
           build-args: COMMIT=${{ needs.setup.outputs.commit }}
   
