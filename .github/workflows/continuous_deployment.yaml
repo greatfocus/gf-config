@@ -217,5 +217,7 @@ jobs:
           echo "${{ secrets.KUBE_QA_CONFIG }}" > $HOME/.kube/config
       - name: Deploy
         run: |
+          docker pull mucunga90/gf-config:qa
           kubectl --kubeconfig $HOME/.kube/config apply -f deploy/k8s/qa.yaml
           kubectl --kubeconfig $HOME/.kube/config patch deployment gf-config-deployment --namespace=qa -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"rollout\":\"`date +'%s'`\"}}}}}"
+          kubectl --namespace=qa port-forward service/gf-config-service 5000:80
