@@ -3,7 +3,7 @@ package router
 import (
 	"net/http"
 
-	"github.com/greatfocus/gf-config/handlers"
+	"github.com/greatfocus/gf-config/handler"
 	"github.com/greatfocus/gf-sframe/server"
 )
 
@@ -17,7 +17,7 @@ func LoadRouter() *http.ServeMux {
 // configRoute created all routes and handlers relating to controller
 func loadHandlers(mux *http.ServeMux) {
 	// Initialize routes
-	mux.Handle("/config/vault", server.Use(new(handlers.VaultHandler),
+	mux.Handle("/config/vault", server.Use(new(handler.Vault),
 		server.SetHeaders(),
 		server.CheckLimitsRates(),
 		server.WithoutAuth()))

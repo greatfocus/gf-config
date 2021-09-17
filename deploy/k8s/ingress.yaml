@@ -1,14 +1,19 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: backendapi
   namespace: qa
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
   - host: qa.localhost.com
     http:
       paths:
-      - path: /config/*
+      - pathType: Prefix
+        path: "/config"
         backend:
-          serviceName: gf-config-service
-          servicePort: 80
+          service:
+            name: gf-config-service
+            port:
+              number: 5000

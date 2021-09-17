@@ -1,15 +1,16 @@
-@hostname = 127.0.0.1
+@hostname = localhost
 @port = 5000
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 
 ### Get Config
 # @name GetConfig
-POST https://{{host}}/config/vault
+POST http://{{host}}/config/vault
 Content-Type: {{contentType}}
 
 {
-    "impl": "gf-notify",
-    "application": "respect",
-    "env": "prod"
+    "service": "gf-notify",
+    "env": "qa",
+    "vaultUser": "user",
+    "vaultPass": "pass"
 }

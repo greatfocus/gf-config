@@ -10,7 +10,7 @@ metadata:
   namespace: qa
 data:
   ENV: qa
-  ADR: :5000
+  SERVICE: gf-config
 ---
 apiVersion: v1
 kind: Service
