@@ -3,6 +3,8 @@ https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 
 https://minikube.sigs.k8s.io/docs/start/
 
+https://medium.com/@schogini/ingress-controller-and-kubernetes-using-minikube-a-tiny-demonstration-63c2a73e2803
+
 Pull Request
 
     - First time PR creation runs pull_request_builder.yaml
