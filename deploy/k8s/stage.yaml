@@ -18,7 +18,7 @@ metadata:
   name: gf-config-service
   namespace: stage
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: gf-config
   ports:
