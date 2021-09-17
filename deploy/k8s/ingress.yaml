@@ -8,8 +8,8 @@ spec:
   - host: qa.localhost.com
     http:
       paths:
-      - pathType: Prefix
-        path: /config
+      - path: /config/*
+        pathType: Prefix
         backend:
           service:
             name: gf-config-service

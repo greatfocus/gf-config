@@ -20,7 +20,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: gf-config
+    app: gf-config-service
   ports:
     - name: http
       protocol: TCP
@@ -33,18 +33,18 @@ metadata:
   name: gf-config-deployment
   namespace: qa
   labels:
-    app: gf-config
+    app: gf-config-service
   annotations:
     rollout: ""
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gf-config
+      app: gf-config-service
   template:
     metadata:
       labels:
-        app: gf-config
+        app: gf-config-service
     spec:
       containers:
         - name: golang
