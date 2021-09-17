@@ -10,6 +10,6 @@
      
     COPY --from=build /source/bin/gf-config /bin/gf-config
      
-    EXPOSE 5000
+    EXPOSE 8080
      
     ENTRYPOINT ["./bin/gf-config"]

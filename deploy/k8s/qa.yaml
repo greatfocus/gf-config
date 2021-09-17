@@ -18,14 +18,15 @@ metadata:
   name: gf-config-service
   namespace: qa
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: gf-config
   ports:
     - name: http
       protocol: TCP
       port: 80
-      targetPort: 5000
+      targetPort: 8080
+      nodePort: 5000
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -51,9 +52,7 @@ spec:
           image: mucunga90/gf-config:qa
           imagePullPolicy: IfNotPresent
           ports:
-            - name: http
-              protocol: TCP
-              containerPort: 5000
+            - containerPort: 8080 # run on port 8080
           envFrom:
             - configMapRef:
                 name: gf-config-configmap
