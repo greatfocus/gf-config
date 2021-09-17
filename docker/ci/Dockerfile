@@ -9,7 +9,7 @@
     FROM alpine:3.12
      
     COPY --from=build /source/bin/gf-config /bin/gf-config
-    COPY  -r /source/vault /bin
+    COPY --from=build /source/vault /bin
      
     EXPOSE 5000
      
