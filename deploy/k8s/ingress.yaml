@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: backendapi
+  namespace: qa
+spec:
+  rules:
+  - host: qa.localhost.com
+    http:
+      paths:
+      - path: /config/*
+        backend:
+          serviceName: gf-config-service
+          servicePort: 8080

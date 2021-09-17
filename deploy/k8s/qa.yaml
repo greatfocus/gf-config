@@ -10,7 +10,7 @@ metadata:
   namespace: qa
 data:
   ENV: qa
-  ADR: :5000
+  ADR: :8080
 ---
 apiVersion: v1
 kind: Service
@@ -18,7 +18,7 @@ metadata:
   name: gf-config-service
   namespace: qa
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: gf-config
   ports:
@@ -26,7 +26,6 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 8080
-      nodePort: 5000
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -52,7 +51,9 @@ spec:
           image: mucunga90/gf-config:qa
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8080 # run on port 8080
+            - name: http
+              protocol: TCP
+              containerPort: 8080
           envFrom:
             - configMapRef:
                 name: gf-config-configmap
@@ -61,6 +62,21 @@ spec:
               mountPath: ./.env
               subPath: .env
               readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
       volumes:
         - name: dotenv
           secret:
