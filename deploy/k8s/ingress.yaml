@@ -3,15 +3,13 @@ kind: Ingress
 metadata:
   name: backendapi
   namespace: qa
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
   - host: qa.localhost.com
     http:
       paths:
       - pathType: Prefix
-        path: "/config"
+        path: /config
         backend:
           service:
             name: gf-config-service
