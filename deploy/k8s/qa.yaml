@@ -10,7 +10,7 @@ metadata:
   namespace: qa
 data:
   ENV: qa
-  ADR: :8080
+  ADR: :5000
 ---
 apiVersion: v1
 kind: Service
@@ -25,7 +25,7 @@ spec:
     - name: http
       protocol: TCP
       port: 80
-      targetPort: 8080
+      targetPort: 5000
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -53,7 +53,7 @@ spec:
           ports:
             - name: http
               protocol: TCP
-              containerPort: 8080
+              containerPort: 5000
           envFrom:
             - configMapRef:
                 name: gf-config-configmap
@@ -62,21 +62,6 @@ spec:
               mountPath: ./.env
               subPath: .env
               readOnly: true
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 5
-            periodSeconds: 15
-            timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /readiness
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
       volumes:
         - name: dotenv
           secret:
