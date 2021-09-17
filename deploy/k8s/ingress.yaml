@@ -9,9 +9,9 @@ spec:
     http:
       paths:
       - path: /config/*
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
-            name: gf-config-service
+            name: nginx
             port:
               number: 80
