@@ -8,8 +8,8 @@ github.com/greatfocus/gf-dispatcher v0.0.1-beta.1 h1:jEaeNvQypunXeFZHrjltEaBVRus
 github.com/greatfocus/gf-dispatcher v0.0.1-beta.1/go.mod h1:OAvCMPDdxU+nmiWouPQlYL41dXUfgC+Ub5KR+K6eeR8=
 github.com/greatfocus/gf-jwt v0.0.1-beta.1 h1:3tOscK0tfLzavSGKe70MGE/xptD2IBDZR7Caog5Olvs=
 github.com/greatfocus/gf-jwt v0.0.1-beta.1/go.mod h1:CJKbyZe0zipbTCJ2KyYVkEMrx380YUHXpvGaOVGjRNE=
-github.com/greatfocus/gf-sframe v0.0.1-beta.7 h1:yw5l46JqDxlr6QS/N0mZ7pKh60ScmnE3f8BKTI+38eA=
-github.com/greatfocus/gf-sframe v0.0.1-beta.7/go.mod h1:MyKKIcYwrM6cZriV9bFNPXSi5CvLyA17xBGuk1oK2Rw=
+github.com/greatfocus/gf-sframe v0.0.1-beta.8 h1:6XheqxfrtyuUYK91KnCoALzCUuMOHTZlBQ2NVJ9ngw0=
+github.com/greatfocus/gf-sframe v0.0.1-beta.8/go.mod h1:MyKKIcYwrM6cZriV9bFNPXSi5CvLyA17xBGuk1oK2Rw=
 github.com/greatfocus/gf-validator v0.0.1-beta.1/go.mod h1:m6GZk27Hvr3HswH4FA3NYJ4cUZcKSf2Ycx6A2qQyZUw=
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
 golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a/go.mod h1:P+XmwS30IXTQdn5tA2iutPOUgjI07+tq3H3K9MVA1s8=
