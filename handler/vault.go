@@ -61,14 +61,7 @@ func (v *Vault) getConfig(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	vaultPath, err := os.Getwd()
-	if err != nil {
-		log.Printf("Error: %v\n", err)
-		server.Error(w, http.StatusUnprocessableEntity, errors.New("error accessing vault"))
-		return
-	}
-
-	var path = vaultPath + "/vault/" + vault.Service + "/" + vault.Env + ".json"
+	var path = os.Getenv("VALT_PATH") + "/vault/" + vault.Service + "/" + vault.Env + ".json"
 	config, err := read(path)
 	if err != nil {
 		log.Printf("Error: %v\n", err)
