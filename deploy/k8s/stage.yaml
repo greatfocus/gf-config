@@ -13,6 +13,7 @@ data:
   SERVICE: gf-config
   VALT_USER: respect
   VALT_PASS: respect@123
+  VALT_PATH: /bin/application
 ---
 apiVersion: v1
 kind: Service
