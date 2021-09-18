@@ -9,9 +9,9 @@
      
     FROM alpine:3.12
      
-    COPY --from=build /source/bin/gf-config /bin/gf-config
-    COPY --from=build /source/vault /bin
+    COPY --from=build /source/bin/gf-config /bin/application/gf-config
+    COPY --from=build /source/vault /bin/application/vault
      
     EXPOSE 5000
      
-    ENTRYPOINT ["./bin/gf-config"]
+    ENTRYPOINT ["./bin/application/gf-config"]
