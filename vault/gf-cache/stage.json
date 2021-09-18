@@ -1,20 +1,20 @@
 {
-    "env": "dev",
-    "impl": "gf-config",
+    "env": "stage",
+    "impl": "gf-cache",
     "cache": {
         "cleanupInterval": 1,
         "defaultExpiration": 5
     },
     "server": {
-        "port": "5004",
+        "port": "5001",
         "timeout": 200,
         "allowedOrigins": [
-            "https://127.0.0.1",
-            "https://192.168.100.50"
+            "http://127.0.0.1",
+            "http://qa.localhost.com"
         ],
         "allowedIPs": [
             "127.0.0.1",
-            "192.168.100.50"
+            "qa.localhost.com"
         ],
         "secure": {
             "cert": "/etc/ssl/certs/nginx-selfsigned.crt",
@@ -64,8 +64,8 @@
     },
     "services": {
         "user" : {
-            "host": "https://192.168.100.50",
-            "port": "443",
+            "host": "http://qa.localhost.com",
+            "port": "80",
             "client": {
                 "email": "muthurimixphone@gmail.com",
                 "clientid": "98590c398a254d2898838e1b17381575",
@@ -85,22 +85,22 @@
     },
     "integrations": {
         "contact": {
-            "email": "mucunga90@gmail.com",
-            "phone": "0724904371"
+            "email": "test@gmail.com",
+            "phone": "0700000000"
         },
         "email": {
-            "host": "mucunga90@gmail.com",
+            "host": "test@gmail.com",
             "port": "587",
-            "user": "mucunga90@gmail.com",
-            "password": "0724904371",
-            "from": "mucunga90@gmail.com"
+            "user": "test@gmail.com",
+            "password": "0700000000",
+            "from": "test@gmail.com"
         },
         "payment": {
             "mpesa": {
                 "env": 0,
                 "appKey": "rBdngruMwoR7qxedrYHEqsY5saEGWWF0",
                 "appSecret": "BfaHKva1BPwrGGzv",
-                "callBackUrl": "http://41.80.6.120/payment/mpesa/callback",
+                "callBackUrl": "http://192.168.0.103/payment/mpesa/callback",
                 "passKey": "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919",
                 "shortCode": "174379"
             }
