@@ -11,6 +11,6 @@ Content-Type: {{contentType}}
 {
     "service": "gf-notify",
     "env": "qa",
-    "vaultUser": "user",
-    "vaultPass": "pass"
+    "vaultUser": "respect",
+    "vaultPass": "respect@123"
 }

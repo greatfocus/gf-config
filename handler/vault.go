@@ -29,25 +29,13 @@ func (v Vault) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Allow", "GET, POST, PUT, DELETE")
 }
 
-// Handler method routes to http methods supported
-func (v *Vault) Handler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodPost:
-
-	default:
-		err := errors.New("invalid Request")
-		server.Error(w, http.StatusNotFound, err)
-		return
-	}
-}
-
 // requestMessage method creates a message request
 func (v *Vault) getConfig(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		derr := errors.New("invalid payload request")
 		log.Printf("Error: %v\n", err)
-		server.Error(w, http.StatusBadGateway, derr)
+		server.Error(w, http.StatusBadRequest, derr)
 		return
 	}
 
@@ -56,28 +44,28 @@ func (v *Vault) getConfig(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		derr := errors.New("invalid payload request")
 		log.Printf("Error: %v\n", err)
-		server.Error(w, http.StatusBadGateway, derr)
+		server.Error(w, http.StatusBadRequest, derr)
 		return
 	}
 
 	// validate payload
 	if vault.Service == "" || vault.Env == "" {
 		derr := errors.New("invalid payload request")
-		server.Error(w, http.StatusBadGateway, derr)
+		server.Error(w, http.StatusBadRequest, derr)
 		return
 	}
 
 	if vault.VaultUser != os.Getenv("VALT_USER") || vault.VaultPass != os.Getenv("VALT_PASS") {
 		derr := errors.New("invalid credentials")
-		server.Error(w, http.StatusBadGateway, derr)
+		server.Error(w, http.StatusUnauthorized, derr)
 		return
 	}
 
-	var path = "./vault/" + vault.Service + "/" + vault.Env + ".json"
+	var path = os.Getenv("VALT_PATH") + "/vault/" + vault.Service + "/" + vault.Env + ".json"
 	config, err := read(path)
 	if err != nil {
 		log.Printf("Error: %v\n", err)
-		server.Error(w, http.StatusUnprocessableEntity, errors.New("error accessing key vault"))
+		server.Error(w, http.StatusUnprocessableEntity, errors.New("error accessing vault"))
 		return
 	}
 
@@ -91,27 +79,27 @@ func (v *Vault) getConfig(w http.ResponseWriter, r *http.Request) {
 func read(file string) (config.Config, error) {
 	var result = config.Config{}
 	if len(file) < 1 {
-		derr := errors.New("config file name is empty")
+		derr := errors.New("config is missing")
 		return result, derr
 	}
 
 	jsonFile, err := os.OpenFile(file, os.O_RDONLY, 0600)
 	if err != nil {
-		derr := errors.New("cannot find location of config file")
+		derr := errors.New("config is missing")
 		return result, derr
 	}
 
 	// read the config file
 	byteContent, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
-		derr := errors.New("invalid config formate")
+		derr := errors.New("invalid config formart")
 		return result, derr
 	}
 
 	// convert the config file bytes to json
 	err = json.Unmarshal([]byte(byteContent), &result)
 	if err != nil {
-		derr := errors.New("invalid config formate")
+		derr := errors.New("invalid config formart")
 		return result, derr
 	}
 
