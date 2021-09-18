@@ -1,12 +1,12 @@
 {
     "env": "dev",
-    "impl": "gf-console",
+    "impl": "gf-user",
     "cache": {
         "cleanupInterval": 1,
         "defaultExpiration": 5
     },
     "server": {
-        "port": "5001",
+        "port": "5004",
         "timeout": 200,
         "allowedOrigins": [
             "https://127.0.0.1",

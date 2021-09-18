@@ -23,6 +23,6 @@ func main() {
 	}
 
 	// create server connection
-	log.Println("Listening to port secure HTTPS", addr)
+	log.Println("Listening to port HTTP", addr)
 	log.Fatal(srv.ListenAndServe())
 }

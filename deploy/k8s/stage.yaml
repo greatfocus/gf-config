@@ -9,8 +9,8 @@ metadata:
   name: gf-config-configmap
   namespace: stage
 data:
-  ENV: stage
-  ADR: :8080
+  ENV: qa
+  SERVICE: gf-config
 ---
 apiVersion: v1
 kind: Service
@@ -18,14 +18,14 @@ metadata:
   name: gf-config-service
   namespace: stage
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: gf-config
   ports:
     - name: http
       protocol: TCP
       port: 80
-      targetPort: 8080
+      targetPort: 5000
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -53,7 +53,7 @@ spec:
           ports:
             - name: http
               protocol: TCP
-              containerPort: 8080
+              containerPort: 5000
           envFrom:
             - configMapRef:
                 name: gf-config-configmap

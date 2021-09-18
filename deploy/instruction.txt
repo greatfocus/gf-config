@@ -3,6 +3,8 @@ https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 
 https://minikube.sigs.k8s.io/docs/start/
 
+minikube addons enable ingress
+
 Pull Request
 
     - First time PR creation runs pull_request_builder.yaml
