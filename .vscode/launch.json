@@ -9,19 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceRoot}/main.go",
-            "env": {},
-            "args": [
-                "https://192.168.100.50/config",
-                "respect",
-                "dev",
-                "SGDBDUEEH882922222",
-                "/etc/ssl/respect/gf.crt",
-                "/etc/ssl/respect/gf-server.crt",
-                "/etc/ssl/respect/gf-server.key",
-                "/etc/ssl/respect/gf-client.crt",
-                "/etc/ssl/respect/gf-client.key"
-            ]
+            "program": "${workspaceRoot}/main.go"
         }
     ]
 }
