@@ -68,7 +68,7 @@ func (v *Vault) getConfig(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var path = vaultPath + "./vault/" + vault.Service + "/" + vault.Env + ".json"
+	var path = vaultPath + "/vault/" + vault.Service + "/" + vault.Env + ".json"
 	config, err := read(path)
 	if err != nil {
 		log.Printf("Error: %v\n", err)
