@@ -18,3 +18,10 @@ spec:
             name: gf-config-service
             port:
               number: 80
+      - path: "/cache/(.*)"
+        pathType: Prefix
+        backend:
+          service:
+            name: gf-cache-service
+            port:
+              number: 80
