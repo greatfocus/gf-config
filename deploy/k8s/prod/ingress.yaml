@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prod-ingress
+  namespace: prod
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+  - host: prod.localhost.com
+    http:
+      paths:
+      - path: "/config/(.*)"
+        pathType: Prefix
+        backend:
+          service:
+            name: gf-config-service
+            port:
+              number: 80
+      - path: "/cache/(.*)"
+        pathType: Prefix
+        backend:
+          service:
+            name: gf-cache-service
+            port:
+              number: 80
+      - path: "/user/(.*)"
+        pathType: Prefix
+        backend:
+          service:
+            name: gf-user-service
+            port:
+              number: 80

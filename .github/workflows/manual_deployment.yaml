@@ -1,0 +1,81 @@
+# Trigger the workflow to deploy a specific git reference to a specific environment only when:
+# - the `workflow_dispatch` event is used in the UI.
+# This is ideal for environment such as production, staging or sandbox if you wish to make the
+# deployment manual.
+  
+name: Manual deployment
+  
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: "Environment to deploy - options: qa|stage|prod"
+        required: true
+      ref:
+        description: "Git reference to deploy - example: branch/tag/sha"
+        required: true
+  
+jobs:
+
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      repo: ${{ steps.vars.outputs.repo }}
+      commit: ${{ steps.vars.outputs.commit }}
+    steps:
+      - name: Deployment info
+        run: echo "Deploying '${{ github.event.inputs.ref }}' to '${{ github.event.inputs.env }}' environment"
+      - name: Verifying environment
+        run: |
+          envs=("qa stage prod")
+          [[ ${envs[*]} =~ ${{ github.event.inputs.env }} ]] || { echo "Invalid environment"; exit 1; }
+      - name: Use repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.ref }}
+      - name: Build variables
+        id: vars
+        run: |
+          echo "::set-output name=repo::$GITHUB_REPOSITORY"
+          echo "::set-output name=commit::$(git rev-parse --short "$GITHUB_SHA")"
+      - name: Upload repository
+        uses: actions/upload-artifact@v2
+        with:
+          name: repository
+          path: |
+            ${{ github.workspace }}/deploy
+
+  deploy:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download repository
+        uses: actions/download-artifact@v2
+        with:
+          name: repository
+      - name: Install kubectl
+        run: |
+          curl -LO https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl
+          curl -LO "https://dl.k8s.io/v1.22.0/bin/linux/amd64/kubectl.sha256"
+          echo "$(<kubectl.sha256) kubectl" | sha256sum --check
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          kubectl version --client
+      - name: Create kube config
+        run: |
+          mkdir -p $HOME/.kube/
+          case ${{ github.event.inputs.env }} in
+                qa) echo "${{ secrets.KUBE_QA_URL }}" > $HOME/.kube/config ;;
+            stage) echo "${{ secrets.KUBE_STAGE_URL }}" > $HOME/.kube/config ;;
+              prod) echo "${{ secrets.KUBE_PROD_URL }}" > $HOME/.kube/config ;;
+                *) echo "Invalid environment"; exit 1;;
+          esac
+          case ${{ github.event.inputs.env }} in
+                qa) echo "${{ secrets.KUBE_QA_CONFIG }}" > $HOME/.kube/qa.yaml ;;
+            stage) echo "${{ secrets.KUBE_STAGE_CONFIG }}" > $HOME/.kube/stage.yaml ;;
+              prod) echo "${{ secrets.KUBE_PROD_CONFIG }}" > $HOME/.kube/prod.yaml ;;
+                *) echo "Invalid config"; exit 1;;
+          esac
+      - name: Deploy
+        run: |
+          kubectl --kubeconfig $HOME/.kube/config delete secret -n ${{ github.event.inputs.env }} gf-config-secret
+          kubectl --kubeconfig $HOME/.kube/config create secret generic -n ${{ github.event.inputs.env }} gf-config-secret --from-env-file=$HOME/.kube/${{ github.event.inputs.env }}.yaml
