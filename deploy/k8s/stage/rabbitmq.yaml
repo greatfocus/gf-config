@@ -56,6 +56,17 @@ spec:
             - name: amqp
               protocol: TCP
               containerPort: 5672
+          env:
+            - name: RABBITMQ_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: gf-config-secret
+                  key: RABBITMQ_PASS
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gf-config-secret
+                  key: RABBITMQ_USER
           envFrom:
             - secretRef:
                 name: gf-config-secret
