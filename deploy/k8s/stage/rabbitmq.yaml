@@ -57,16 +57,21 @@ spec:
               protocol: TCP
               containerPort: 5672
           env:
-            - name: RABBITMQ_PASS
+            - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:
                   name: gf-config-secret
                   key: RABBITMQ_PASS
-            - name: RABBITMQ_USER
+            - name: RABBITMQ_DEFAULT_USER
               valueFrom:
                 secretKeyRef:
                   name: gf-config-secret
                   key: RABBITMQ_USER
+            - name: RABBITMQ_ERLANG_COOKIE
+              valueFrom:
+                secretKeyRef:
+                  name: gf-config-cookie
+                  key: erlangCookie
           envFrom:
             - secretRef:
                 name: gf-config-secret
@@ -100,3 +105,8 @@ spec:
       name: amqp
   selector:
    app: rabbitmq
+
+# kubectl delete service rabbitmq-service
+# kubectl delete deployment rabbitmq-deployment
+# kubectl delete persistentvolumeclaim rabbitmq-pv-claim
+# kubectl delete persistentvolume rabbitmq-pv-volume

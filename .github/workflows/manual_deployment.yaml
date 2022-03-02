@@ -79,3 +79,4 @@ jobs:
         run: |
           kubectl --kubeconfig $HOME/.kube/config delete secret -n ${{ github.event.inputs.env }} gf-config-secret
           kubectl --kubeconfig $HOME/.kube/config create secret generic -n ${{ github.event.inputs.env }} gf-config-secret --from-env-file=$HOME/.kube/${{ github.event.inputs.env }}.yaml
+          kubectl --kubeconfig $HOME/.kube/config create secret generic -n ${{ github.event.inputs.env }} gf-config-cookie --from-literal=erlangCookie=$(dd if=/dev/urandom bs=30 count=1 | base64)
