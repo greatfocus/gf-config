@@ -1,8 +1,10 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: rabbitmq-pv-volume
-  namespace: stage
+  name: rabbitmq-volume
+  labels:
+    component: rabbitmq
+    function: events
 spec:
   storageClassName: slow
   capacity:
@@ -16,8 +18,7 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: rabbitmq-pv-claim
-  namespace: stage
+  name: rabbitmq-claim
 spec:
   storageClassName: slow
   accessModes:
@@ -25,12 +26,17 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  selector:
+    matchLabels:
+      component: rabbitmq
+      function: events
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rabbitmq-deployment
-  namespace: stage
+  name: rabbitmq
+  labels:
+    app: rabbitmq
 spec:
   replicas: 2
   selector:
@@ -45,6 +51,13 @@ spec:
         - name: rabbitmq
           image: rabbitmq:3.7
           imagePullPolicy: "IfNotPresent"
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: "1"
+            requests:
+              memory: 256Mi
+              cpu: "0.2"
           lifecycle:
             postStart:
               exec:
@@ -56,6 +69,22 @@ spec:
             - name: amqp
               protocol: TCP
               containerPort: 5672
+          env:
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: gf-config-secret
+                  key: RABBITMQ_PASS
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gf-config-secret
+                  key: RABBITMQ_USER
+            - name: RABBITMQ_ERLANG_COOKIE
+              valueFrom:
+                secretKeyRef:
+                  name: gf-config-cookie
+                  key: erlangCookie
           envFrom:
             - secretRef:
                 name: gf-config-secret
@@ -65,13 +94,12 @@ spec:
       volumes:
         - name: rabbitmq-storage
           persistentVolumeClaim:
-            claimName: rabbitmq-pv-claim
+            claimName: rabbitmq-claim
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rabbitmq-service
-  namespace: stage
+  name: rabbitmq
   labels:
     app: rabbitmq
 spec:
@@ -79,13 +107,17 @@ spec:
   ports:
     - port: 15672
       targetPort: 15672
-      nodePort: 31672
       protocol: TCP
       name: http
     - port: 5672
       targetPort: 5672
-      nodePort: 30672
       protocol: TCP
       name: amqp
+      nodePort: 30006
   selector:
    app: rabbitmq
+
+# kubectl delete service rabbitmq-service
+# kubectl delete deployment rabbitmq-deployment
+# kubectl delete persistentvolumeclaim rabbitmq-pv-claim
+# kubectl delete persistentvolume rabbitmq-pv-volume

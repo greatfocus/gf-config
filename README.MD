@@ -116,7 +116,7 @@ Finally it should look like something like below.
         client-key-data: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0.......
 
      
-Copy this content into `KUBE_QA_URL` GitHub secret. Also additional ones for the other environments.
+Copy this content into `CLUSTER_CONFIG` GitHub secret. Also additional ones for the other environments.
 
 
 # killing sturbborn volumeClaim
@@ -125,7 +125,27 @@ Copy this content into `KUBE_QA_URL` GitHub secret. Also additional ones for the
 
 # Killing sturbborn ingress
 
-    kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+    https://devopscube.com/setup-ingress-kubernetes-nginx-controller/
 
-    minikube addons enable ingress
+    kubectl get ingress --all-namespaces
+    
+    kubectl delete all  --all -n qa
+
+# Generate Self Signed Certificate
+
+    Step 1: Generate a CA private key
+
+        $ openssl genrsa -out ca.key 2048
+
+    Step 2: Create a self-signed certificate, valid for 365 days.
+
+        $ openssl req -x509 \
+            -new -nodes  \
+            -days 365 \
+            -key ca.key \
+            -out ca.crt \
+            -subj "/CN=*.localhost.com" \
+            -addext "subjectAltName = DNS:*.localhost.com" 
+
+    openssl base64 -in ca.crt -out ca.txt
 

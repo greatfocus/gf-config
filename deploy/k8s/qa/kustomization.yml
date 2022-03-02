@@ -3,5 +3,6 @@ kind: Kustomization
 
 namespace: qa
 resources:
-- ingress.yaml
 - rabbitmq.yaml
+- web-ingress.yaml
+- api-ingress.yaml

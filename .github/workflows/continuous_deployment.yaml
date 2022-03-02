@@ -31,6 +31,12 @@ jobs:
           name: repository
           path: |
             ${{ github.workspace }}/deploy
+            ${{ github.workspace }}/docker
+            ${{ github.workspace }}/.dockerignore
+            ${{ github.workspace }}/main.go
+            ${{ github.workspace }}/main_test.go
+            ${{ github.workspace }}/go.mod
+            ${{ github.workspace }}/go.sum
 
   deploy:
     needs: [setup]
@@ -42,17 +48,26 @@ jobs:
           name: repository
       - name: Install kubectl
         run: |
-          curl -LO https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl
-          curl -LO "https://dl.k8s.io/v1.22.0/bin/linux/amd64/kubectl.sha256"
+          curl -LO https://dl.k8s.io/release/v1.28.3/bin/linux/amd64/kubectl
+          curl -LO "https://dl.k8s.io/v1.28.3/bin/linux/amd64/kubectl.sha256"
           echo "$(<kubectl.sha256) kubectl" | sha256sum --check
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
           kubectl version --client
       - name: Create kube config
         run: |
           mkdir -p $HOME/.kube/
-          echo "${{ secrets.KUBE_QA_URL }}" > $HOME/.kube/config
-          echo "${{ secrets.KUBE_QA_CONFIG }}" > $HOME/.kube/qa.yaml
+          echo "${{ secrets.CLUSTER_QA_CONFIG }}" > $HOME/.kube/config
+          echo "${{ secrets.CLUSTER_QA_CLIENT_CERT }}" > $HOME/.kube/client.crt
+          echo "${{ secrets.CLUSTER_QA_CLIENT_KEY }}" > $HOME/.kube/client.key
+          echo "${{ secrets.CLUSTER_QA_ENV }}" > $HOME/.kube/qa.properties
+          echo "${{ secrets.CLUSTER_QA_TLS_KEY }}" > $HOME/.kube/tls_ca.key
+          echo "${{ secrets.CLUSTER_QA_TLS_CERT }}" > $HOME/.kube/tls_ca.crt
       - name: Deploy
         run: |
           kubectl --kubeconfig $HOME/.kube/config delete secret -n qa gf-config-secret
-          kubectl --kubeconfig $HOME/.kube/config create secret generic -n qa gf-config-secret --from-env-file=$HOME/.kube/qa.yaml
+          kubectl --kubeconfig $HOME/.kube/config create secret generic -n qa gf-config-secret --from-env-file=$HOME/.kube/qa.properties
+          kubectl --kubeconfig $HOME/.kube/config delete secret -n qa tls-secret
+          kubectl --kubeconfig $HOME/.kube/config create secret tls -n qa tls-secret --key $HOME/.kube/tls_ca.key --cert $HOME/.kube/tls_ca.crt
+          kubectl --kubeconfig $HOME/.kube/config delete secret -n qa gf-config-cookie
+          kubectl --kubeconfig $HOME/.kube/config create secret generic -n qa gf-config-cookie --from-literal=erlangCookie=$(dd if=/dev/urandom bs=30 count=1 | base64)
+          kubectl --kubeconfig $HOME/.kube/config apply -k deploy/k8s/qa

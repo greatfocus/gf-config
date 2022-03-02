@@ -3,5 +3,6 @@ kind: Kustomization
 
 namespace: stage
 resources:
-- ingress.yaml
 - rabbitmq.yaml
+- web-ingress.yaml
+- api-ingress.yaml
