@@ -75,6 +75,18 @@ jobs:
               prod) echo "${{ secrets.KUBE_PROD_CONFIG }}" > $HOME/.kube/prod.yaml ;;
                 *) echo "Invalid config"; exit 1;;
           esac
+          case ${{ github.event.inputs.env }} in
+                qa) echo "${{ secrets.KUBE_QA_TLS_KEY }}" > $HOME/.kube/ca.key ;;
+            stage) echo "${{ secrets.KUBE_STAGE_TLS_KEY }}" > $HOME/.kube/ca.key ;;
+              prod) echo "${{ secrets.KUBE_PROD_TLS_KEY }}" > $HOME/.kube/ca.key ;;
+                *) echo "Invalid config"; exit 1;;
+          esac
+          case ${{ github.event.inputs.env }} in
+                qa) echo "${{ secrets.KUBE_QA_TLS_CERT }}" > $HOME/.kube/ca.crt ;;
+            stage) echo "${{ secrets.KUBE_STAGE_TLS_CERT  }}" > $HOME/.kube/ca.crt ;;
+              prod) echo "${{ secrets.KUBE_PROD_TLS_CERT  }}" > $HOME/.kube/ca.crt ;;
+                *) echo "Invalid config"; exit 1;;
+          esac
       - name: Deploy
         run: |
           kubectl --kubeconfig $HOME/.kube/config delete secret -n ${{ github.event.inputs.env }} gf-config-secret

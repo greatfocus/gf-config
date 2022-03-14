@@ -129,3 +129,17 @@ Copy this content into `KUBE_QA_URL` GitHub secret. Also additional ones for the
 
     minikube addons enable ingress
 
+# Generate Self Signed Certificate
+
+    Step 1: Generate a CA private key
+
+        $ OpenSSL genrsa -out ca.key 2048
+
+    Step 2: Create a self-signed certificate, valid for 365 days.
+
+        $ openssl req -x509 \
+            -new -nodes  \
+            -days 365 \
+            -key ca.key \
+            -out ca.crt \
+            -subj "/CN=qa.localhost.com"

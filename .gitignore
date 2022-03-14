@@ -19,3 +19,12 @@ __debug_bin
 
 # environment
 .env
+
+# certificates
+logs/**
+ssl/**
+*.txt
+*.log
+*.crt
+*.pem
+*.key

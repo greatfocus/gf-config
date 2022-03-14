@@ -52,8 +52,12 @@ jobs:
           mkdir -p $HOME/.kube/
           echo "${{ secrets.KUBE_QA_URL }}" > $HOME/.kube/config
           echo "${{ secrets.KUBE_QA_CONFIG }}" > $HOME/.kube/qa.yaml
+          echo "${{ secrets.KUBE_QA_TLS_KEY }}" > $HOME/.kube/ca.key
+          echo "${{ secrets.KUBE_QA_TLS_CERT }}" > $HOME/.kube/ca.crt
       - name: Deploy
         run: |
           kubectl --kubeconfig $HOME/.kube/config delete secret -n qa gf-config-secret
           kubectl --kubeconfig $HOME/.kube/config create secret generic -n qa gf-config-secret --from-env-file=$HOME/.kube/qa.yaml
+          kubectl --kubeconfig $HOME/.kube/config delete secret -n qa tls-secret
+          kubectl --kubeconfig $HOME/.kube/config create secret tls -n qa tls-secret --key $HOME/.kube/ca.key --cert $HOME/.kube/ca.crt
           kubectl --kubeconfig $HOME/.kube/config create secret generic -n qa gf-config-cookie --from-literal=erlangCookie=$(dd if=/dev/urandom bs=30 count=1 | base64)
