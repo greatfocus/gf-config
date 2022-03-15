@@ -33,6 +33,6 @@ spec:
             port:
               number: 80
   tls: 
-    - hosts: 
-        - qa.localhost.com
-      secretName: tls-secret
+  - hosts: 
+      - stage.localhost.com
+    secretName: tls-secret
