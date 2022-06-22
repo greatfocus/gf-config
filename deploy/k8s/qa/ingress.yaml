@@ -5,8 +5,7 @@ metadata:
   namespace: qa
 spec:
   rules:
-  - host: qa.localhost.com
-    http:
+  - http:
       paths:
       - path: /user
         pathType: Prefix
