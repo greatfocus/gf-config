@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: prod-ingress
   namespace: ingress-nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
@@ -15,7 +17,7 @@ spec:
           service:
             name: gf-user-service
             port:
-              number: 80
+              number: 5000
   tls: 
   - hosts: 
       - prod.localhost.com
