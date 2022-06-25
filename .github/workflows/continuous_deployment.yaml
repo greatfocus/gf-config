@@ -69,3 +69,4 @@ jobs:
           kubectl --kubeconfig $HOME/.kube/config delete secret -n qa gf-config-cookie
           kubectl --kubeconfig $HOME/.kube/config create secret generic -n qa gf-config-cookie --from-literal=erlangCookie=$(dd if=/dev/urandom bs=30 count=1 | base64)
           kubectl --kubeconfig $HOME/.kube/config apply -f deploy/k8s/qa/rabbitmq.yaml
+          kubectl --kubeconfig $HOME/.kube/config apply -f deploy/k8s/qa/ingress.yaml
