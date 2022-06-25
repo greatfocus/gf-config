@@ -125,9 +125,7 @@ Copy this content into `KUBE_QA_URL` GitHub secret. Also additional ones for the
 
 # Killing sturbborn ingress
 
-    kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
-
-    minikube addons enable ingress
+    https://devopscube.com/setup-ingress-kubernetes-nginx-controller/
 
 # Generate Self Signed Certificate
 

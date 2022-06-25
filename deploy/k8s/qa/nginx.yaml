@@ -687,7 +687,7 @@ spec:
     secretName: tls-secret
   rules:
   - host: qa.localhost.com
-    http:
+    https:
       paths:
       - path: /user
         pathType: Prefix
