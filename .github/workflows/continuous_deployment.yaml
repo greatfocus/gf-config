@@ -31,6 +31,12 @@ jobs:
           name: repository
           path: |
             ${{ github.workspace }}/deploy
+            ${{ github.workspace }}/docker
+            ${{ github.workspace }}/.dockerignore
+            ${{ github.workspace }}/main.go
+            ${{ github.workspace }}/main_test.go
+            ${{ github.workspace }}/go.mod
+            ${{ github.workspace }}/go.sum
 
   deploy:
     needs: [setup]
