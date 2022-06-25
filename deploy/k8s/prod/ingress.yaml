@@ -695,4 +695,4 @@ spec:
           service:
             name: gf-user-service
             port:
-              number: 80
+              number: 443
