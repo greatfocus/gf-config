@@ -98,16 +98,16 @@ metadata:
   labels:
     app: rabbitmq
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 15672
       targetPort: 15672
-      nodePort: 31672
+      ClusterIP: 31672
       protocol: TCP
       name: http
     - port: 5672
       targetPort: 5672
-      nodePort: 30672
+      ClusterIP: 30672
       protocol: TCP
       name: amqp
   selector:
