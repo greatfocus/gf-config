@@ -102,12 +102,10 @@ spec:
   ports:
     - port: 15672
       targetPort: 15672
-      ClusterIP: 31672
       protocol: TCP
       name: http
     - port: 5672
       targetPort: 5672
-      ClusterIP: 30672
       protocol: TCP
       name: amqp
   selector:
