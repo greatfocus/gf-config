@@ -95,4 +95,5 @@ jobs:
           kubectl --kubeconfig $HOME/.kube/config create secret tls -n ${{ github.event.inputs.env }} tls-secret --key $HOME/.kube/ca.key --cert $HOME/.kube/ca.crt
           kubectl --kubeconfig $HOME/.kube/config delete secret -n ${{ github.event.inputs.env }} gf-config-cookie
           kubectl --kubeconfig $HOME/.kube/config create secret generic -n ${{ github.event.inputs.env }} gf-config-cookie --from-literal=erlangCookie=$(dd if=/dev/urandom bs=30 count=1 | base64)
-          kubectl --kubeconfig $HOME/.kube/config apply -k deploy/k8s/${{ github.event.inputs.env }}
+          kubectl --kubeconfig $HOME/.kube/config apply -f deploy/k8s/${{ github.event.inputs.env }}/rabbitmq.yaml
+          kubectl --kubeconfig $HOME/.kube/config apply -f deploy/k8s/${{ github.event.inputs.env }}/ingress.yaml
