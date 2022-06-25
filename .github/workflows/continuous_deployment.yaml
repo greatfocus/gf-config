@@ -68,5 +68,4 @@ jobs:
           kubectl --kubeconfig $HOME/.kube/config create secret tls -n qa tls-secret --key $HOME/.kube/ca.key --cert $HOME/.kube/ca.crt
           kubectl --kubeconfig $HOME/.kube/config delete secret -n qa gf-config-cookie
           kubectl --kubeconfig $HOME/.kube/config create secret generic -n qa gf-config-cookie --from-literal=erlangCookie=$(dd if=/dev/urandom bs=30 count=1 | base64)
-          kubectl --kubeconfig $HOME/.kube/config apply -f deploy/k8s/qa/nginx.yaml
-          kubectl --kubeconfig $HOME/.kube/config apply -f deploy/k8s/qa/rabbitmq.yaml
+          kubectl --kubeconfig $HOME/.kube/config apply -k deploy/k8s/qa
