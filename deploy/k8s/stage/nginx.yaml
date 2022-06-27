@@ -258,6 +258,8 @@ spec:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/component: controller
+  externalIPs:
+  - 192.168.49.2
 ---
 # Source: ingress-nginx/templates/controller-service.yaml
 apiVersion: v1
@@ -679,8 +681,7 @@ metadata:
   name: stage-ingress
   annotations:
     kubernetes.io/ingress.class: ingress-nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-  namespace: qa
+  namespace: stage
 spec:
   tls: 
   - hosts: 
@@ -696,4 +697,4 @@ spec:
           service:
             name: gf-user-service
             port:
-              number: 8080
+              number: 443
