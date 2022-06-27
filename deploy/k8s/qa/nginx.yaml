@@ -680,6 +680,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: ingress-nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
+  namespace: qa
 spec:
   tls: 
   - hosts: 
@@ -695,4 +696,4 @@ spec:
           service:
             name: gf-user-service
             port:
-              number: 80
+              number: 8080
