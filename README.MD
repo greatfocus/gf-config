@@ -1,7 +1,7 @@
 # [Install Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux)
 Download the latest release with the command
 
-    curl -LO https://dl.k8s.io/release/v1.23.0/bin/linux/amd64/kubectl
+    curl -LO https://dl.k8s.io/release/v1.28.3/bin/linux/amd64/kubectl
 
 Validate the binary (optional)
 
@@ -148,4 +148,11 @@ Copy this content into `CLUSTER_CONFIG` GitHub secret. Also additional ones for 
             -addext "subjectAltName = DNS:*.localhost.com" 
 
     openssl base64 -in ca.crt -out ca.txt
+
+
+# Generate Self Signed Certificate
+
+Add the ingress host to host computer 
+
+    sudo cat /etc/hosts
 
